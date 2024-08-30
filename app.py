@@ -68,7 +68,7 @@ with st.sidebar:
 
     
     if st.button('Reset Filters'):
-        st.experimental_rerun()
+        st.rerun()
 
     st.markdown('--'*20)
 
