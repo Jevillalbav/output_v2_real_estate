@@ -56,6 +56,8 @@ with st.expander('States Filter'):
 ##3 default all selected
 with st.sidebar:
 
+    ################################################################################
+
     slice = st.selectbox('Select Class', options=classes, index=0)
     st.session_state.slice = slice
     box_selector_pop = ['All','+100K', '+500K', '+1M', '+2M' , '+3M' , '+5M', '+7M', '+10M']
@@ -73,7 +75,7 @@ with st.sidebar:
     st.markdown('--'*20)
 
     ################################################################################
-    st.subheader(' Indivual Market Filters', divider= 'blue')
+    st.subheader(' Indivual Market Filters')
     selected_state = st.selectbox('Select State', selected_states, index=0)
     st.session_state.selected_state = selected_state
 
@@ -114,15 +116,11 @@ if summary_filtered.empty:
 
 unidad_columna = mapa_columns.loc[filtro_columnas_mapa_mostrar].values[1]
 
-def transformar_value(column , unidad): 
-    if unidad == '%':
-        return (column).round(4) 
-    elif unidad == 'x':
-        return column.round(2)
-    elif unidad == 'USD':
-        return column.round(0)
-    elif unidad == 'bp':
-        return column
+def transformar_value(column, unidad):
+    if unidad in ['%', 'bp']:
+        return column.round(4 if unidad == '%' else 0)
+    return column.round(2 if unidad == 'x' else 0)
+
     
 def valor_a_mostrar(column, unidad):
     if unidad == '%':
@@ -209,7 +207,7 @@ with col1:
         longitude=-99,
         latitude=38.83,
         zoom=3.4,
-        min_zoom=3.2,
+        min_zoom=2,
         max_zoom=7,
         pitch=75,  # Reducido para hacer más distinguibles las barras altas
         bearing=23
@@ -222,12 +220,8 @@ with col1:
     # Renderiza el mapa
     st.pydeck_chart(
         pdk.Deck(
-            map_style="mapbox://styles/mapbox/streets-v11", 
-            #map_style="mapbox://styles/mapbox/satellite-v9",
-            #map_style="mapbox://styles/mapbox/navigation-day-v1",
-            #map_style="mapbox://styles/mapbox/navigation-night-v1",
-            #map_style="mapbox://styles/mapbox/streets-v11",
-            
+            #map_style="mapbox://styles/mapbox/light-v9",
+            map_style="mapbox://styles/mapbox/streets-v11",
             initial_view_state=view_state,
             layers=[irr_layer, population_layer],
             tooltip={
@@ -270,7 +264,7 @@ with col2:
             orientation='v', 
             nbins=50,  
             ###3 avoid showing number of observations in the hover
-            template='plotly_white',
+            template='plotly_dark',
         )
 
         # Ajustar la apariencia del gráfico
@@ -290,7 +284,7 @@ with col2:
                 The size of the circles is proportional to the population of the city.''')
 
 
-st.subheader('US Markets Summary')
+st.subheader('US Markets Summary', divider= 'blue')
 
 data_show = summary_filtered[['market', 'current_price','market_cagr','noi_cap_rate_compounded',
                                'fixed_interest_rate', 'operation_cashflow','market_cap_appreciation_bp', 'irr', 
@@ -373,7 +367,7 @@ with st.expander('Saved Searches'):
         st.subheader('Performance Comparison')
         st.table(second_table)
 
-st.subheader('Individual Search Results')
+st.subheader('Individual Search Results', divider= 'blue')
 st.write('Summary for :', st.session_state.selected_state, st.session_state.selected_city, st.session_state.selected_slice_city)
 ############################
 
@@ -451,22 +445,22 @@ financial_table.index = financial_table.index.strftime('%Y-%m-%d')
 ind1 , ind2 = st.columns([2, 1])
 
 with ind1:
-    st.subheader('Cashflow Analysis')
+    st.subheader('Cashflow Analysis', divider= 'blue')
     st.dataframe(cashflow_filtered_show, use_container_width=True)
 with ind2:
-    st.subheader('Loan conditions')
+    st.subheader('Loan conditions', divider= 'violet')
     st.dataframe(summary_filtered_loan_cond.T, use_container_width=True, height=490)
     
 st.markdown('---')
 ind_1 , ind_2 = st.columns([1, 2])
 with ind_1:
-    st.subheader('Supply Demand Forecast ')
+    st.subheader('Supply Demand Forecast ', divider= 'blue')
     ### hace un markdown de colores por cada uno con letras en engrita 
     for i in summary_supply_demand.columns:
         st.metric(i, summary_supply_demand[i].values[0], delta= None, delta_color= 'normal')
 
 with ind_2:
-    st.subheader('Supply Demand Data')
+    st.subheader('Supply Demand Data', divider= 'violet')
     st.dataframe(equlibrium_show, use_container_width=True)
     
 st.markdown('---')
@@ -474,7 +468,26 @@ st.markdown('---')
 ind__0 ,ind__1 , ind__2 = st.columns([0.1,2, 0.1])
 
 with ind__1:
-    st.subheader('Financial Data')
+    st.subheader('Financial Data', divider= 'green')
     st.dataframe(financial_table, use_container_width=True)
 
-st.markdown('---')
+
+
+
+heatmap_layer = pdk.Layer(
+    "HeatmapLayer",
+    data=summary_filtered,
+    get_position=["longitude", "latitude"],
+    get_weight="IRR",
+    radius=20000,
+    elevation_scale=200,
+    elevation_range=[0, 1000],
+    pickable=True,
+    extruded=True,
+)
+
+st.pydeck_chart(pdk.Deck(
+    layers=[heatmap_layer],
+    initial_view_state=view_state,
+    map_style='mapbox://styles/mapbox/dark-v10'
+))

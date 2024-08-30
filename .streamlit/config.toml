@@ -1,4 +1,6 @@
 [theme]
-base="dark"
-backgroundColor="#011029"
-secondaryBackgroundColor="#02061a"
+primaryColor = "#1f77b4"  # Un tono azul fuerte para elementos interactivos principales.
+backgroundColor = "#0e1117"  # Un fondo oscuro que reduce la fatiga visual.
+secondaryBackgroundColor = "#161a23"  # Un gris oscuro ligeramente contrastante para diferenciar secciones.
+textColor = "#e2e8f0"  # Un color de texto claro que asegura buena legibilidad sobre fondos oscuros.
+font = "sans serif"  # Una fuente moderna y fácil de leer.

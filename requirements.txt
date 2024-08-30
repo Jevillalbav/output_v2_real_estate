@@ -4,3 +4,5 @@ streamlit
 seaborn
 plotly
 matplotlib
+pydeck
+
