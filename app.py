@@ -35,10 +35,13 @@ classes = summary['slice'].unique()
 
 filtro_columnas_mapa = ['irr','equity_multiple','current_price',#'loan','equity',
                         'market_cagr',
-                        'noi_cap_rate_compounded','operation_cashflow','market_cap_appreciation_bp','npv','npv/equity','demand_vs_supply','demand_yoy_growth','supply_yoy_growth']
+                        'noi_cap_rate_compounded','operation_cashflow',
+                        'market_cap_appreciation_bp','npv','npv/equity',
+                        'demand_vs_supply','demand_yoy_growth','supply_yoy_growth']
 mapa_columns = pd.DataFrame(filtro_columnas_mapa, columns=['columnas'])
 mapa_columns.index = mapa_columns['columnas'].str.replace('_',' ').replace('bp','basis point').str.title().str.replace('Yoy','YoY%').str.replace('Npv','Net Present Value').str.replace('Irr', 'IRR')
-mapa_columns['unit'] = ['%','x','USD','USD','USD','%','%','%','bp','USD','x','%','%','%']
+mapa_columns['unit'] = ['%','x','USD',#USD','USD'
+                        '%','%','%','bp','USD','x','%','%','%']
 
 
 
