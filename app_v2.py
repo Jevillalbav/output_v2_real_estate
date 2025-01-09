@@ -432,8 +432,6 @@ financial_table.columns = ['Occupancy Rate','Market Sale Price per Unit','Market
 for i in ['Market Sale Price per Unit','Market Effective Rent per Unit','Revenue','NOI']:
     financial_table[i] = financial_table[i].apply(lambda x: f'${x:,.0f}')
 
-
-
 for i in ['Market Sale Price Growth','Market Effective Rent Growth 12 Mo','Occupancy Rate','Market Cap Rate', 'Opex']:
     financial_table[i] = financial_table[i].apply(lambda x: f'{x:.2%}')
 
@@ -470,8 +468,6 @@ ind__0 ,ind__1 , ind__2 = st.columns([0.1,2, 0.1])
 with ind__1:
     st.subheader('Financial Data', divider= 'green')
     st.dataframe(financial_table, use_container_width=True)
-
-
 
 
 heatmap_layer = pdk.Layer(
